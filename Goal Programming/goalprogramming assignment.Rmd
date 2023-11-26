@@ -1,0 +1,89 @@
+---
+title: "Goal Programming Assignment"
+author: "Rishitha Rapuri"
+date: "2023-11-26"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#The objective function 
+#Z = P-6C-3D 
+#P = total (discounted) profit over the life of the new products, 
+#C = change (in either direction) in the current level of employment, 
+#D = decrease (if any) in next year’s earnings from the current year’s level.
+ 
+
+```{r}
+table= matrix(c("Total Profit","Employment Level","Earnings NextYear",
+                20,6,8,
+                15,4,7,
+                25,5,5,
+                "Maximize","=50",">=75"),ncol=5, byrow = FALSE)
+                
+colnames(table)= c('Factor', 'P1','P2','P3','Goal')
+table
+```
+#1. Defining y1v,y1u,y2v,y2u
+
+
+#Let x1,x2 and x3, the number of products produced for P1,p2 and p3
+
+#y1u = negative deviation  in employment level
+
+#y1v = positive deviation in employment level
+
+#y2u= negative deviation  in goal regarding earnings next year
+
+#y2v = positive deviation  in goal regarding earnings next year
+
+# P = 20x1 + 15x2 +25x3
+
+#while maintaining employment level as 50 employees and an increase in the company earnings next year above 75 million dollars
+
+#Formulating constraints 
+#Employment level constraint   : y1u - y1v = 6x1 + 4x2 + 5x3 - 50  
+#Earnings next year constraint : y2u - y2v = 8x1 + 7x2 + 5x3 - 75 
+
+#Objective function 
+
+#Maximize: 20x1 + 15x2 + 25x3 - 6y1u - 6y1v - 3y2u
+
+#Constraints:
+
+#6x1 + 4x2 + 5x3 + y1u - y1v = 50
+#8x1 + 7x2 + 5x3 + y2u - y2v = 75
+
+#3.Formulating and solving the linear programming model 
+
+
+```{r}
+library(lpSolveAPI)
+goal<- read.lp("goalprogramming.lp")
+goal
+```
+
+```{r}
+solve(goal)
+```
+
+```{r}
+get.objective(goal)
+```
+
+```{r}
+get.variables(goal)
+```
+```{r}
+get.constraints(goal)
+```
+
+#Interpretation:
+1.In order to maximize the objective function,the firm must use the units of combination X1 - Product 1, X2 -Product 2, and X3 - Product 3.since it is not feasible to produce 20 units of Product 1 and 15 units of Product 2 as planned, the resultant is zero.However X3 has undergone some modifications.The company can only make 15 units of product 3, which is the only product that can maximize the profit.
+2.The objective was to stabilize the employment level with the maximum number of employees limited to fifty hundred employees.But in this case the firm exceeded the employment levels by twenty-five employees (y1v), for which they would be required to pay a penalty for the excess/rise in the employees count.
+3.The goal of y2u and y2v was to capture the increase or decrease in next year's earnings from the current level, which states as "0" in this case, indicating that there is no increase or decrease in next year's earnings when compared to that of the current year. As a result, earnings for the following year remains constant.
+4.The profit that the firm maximizing is 225 million dollars.
